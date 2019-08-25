@@ -14,31 +14,31 @@ import org.jsoup.nodes.Element;
 import com.rarchives.ripme.ripper.AbstractHTMLRipper;
 import com.rarchives.ripme.utils.Http;
 
-public class FemjoyhunterRipper extends AbstractHTMLRipper {
+public class AllporncomicRipper extends AbstractHTMLRipper {
 
-    public FemjoyhunterRipper(URL url) throws IOException {
+    public AllporncomicRipper(URL url) throws IOException {
         super(url);
     }
 
     @Override
     public String getHost() {
-        return "femjoyhunter";
+        return "allporncomic";
     }
 
     @Override
     public String getDomain() {
-        return "femjoyhunter.com";
+        return "allporncomic.com";
     }
 
     @Override
     public String getGID(URL url) throws MalformedURLException {
-        Pattern p = Pattern.compile("https?://www.femjoyhunter.com/([a-zA-Z0-9_-]+)/?");
+        Pattern p = Pattern.compile("https?://allporncomic.com/porncomic/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)");
         Matcher m = p.matcher(url.toExternalForm());
         if (m.matches()) {
-            return m.group(1);
+            return m.group(1) + "_" + m.group(2);
         }
-        throw new MalformedURLException("Expected femjoyhunter URL format: " +
-                "femjoyhunter.com/ID - got " + url + " instead");
+        throw new MalformedURLException("Expected allporncomic URL format: " +
+                "allporncomic.com/TITLE/CHAPTER - got " + url + " instead");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class FemjoyhunterRipper extends AbstractHTMLRipper {
     @Override
     public List<String> getURLsFromPage(Document doc) {
         List<String> result = new ArrayList<>();
-        for (Element el : doc.select("img")) {
+        for (Element el : doc.select(".wp-manga-chapter-img")) {
             result.add(el.attr("src"));
         }
         return result;
@@ -58,7 +58,6 @@ public class FemjoyhunterRipper extends AbstractHTMLRipper {
 
     @Override
     public void downloadURL(URL url, int index) {
-
-        addURLToDownload(url, getPrefix(index), "", "https://a2h6m3w6.ssl.hwcdn.net/", null);
+        addURLToDownload(url, getPrefix(index));
     }
 }
