@@ -28,6 +28,13 @@ Download `ripme.jar` from the [latest release](https://github.com/ripmeapp/ripme
 
 For information about running the `.jar` file, see [the How To Run wiki](https://github.com/ripmeapp/ripme/wiki/How-To-Run-RipMe).
 
+## Installation
+
+On macOS, there is a [cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/ripme.rb).
+```
+brew install --cask ripme && xattr -d com.apple.quarantine /Applications/ripme.jar
+```
+
 ## Changelog
 
 [Changelog](https://github.com/ripmeapp/ripme/blob/master/ripme.json) **(ripme.json)**
@@ -70,21 +77,38 @@ If you're a developer, you can add your own Ripper by following the wiki guide:
 
 # Compiling & Building
 
-The project uses [Maven](http://maven.apache.org/).
-To build the .jar file using Maven, navigate to the root project directory and run:
+The project uses [Gradle](https://gradle.org) or [Maven](http://maven.apache.org/).
+Therefor both commands are given. To build the .jar file, navigate to the root
+project directory and run:
 
 ```bash
 mvn clean compile assembly:single
+mvn -B package assembly:single -Dmaven.test.skip=true
+```
+```bash
+./gradlew clean build
+./gradlew clean build -x test --warning-mode all
 ```
 
-This will include all dependencies in the JAR.
+This will include all dependencies in the JAR. One can skip executing the tests
+as well.
 
 # Running Tests
 
-After building you can run tests by running the following:
+Tests can be marked as beeing slow, or flaky. Default is to run all but the flaky tests. Slow tests can be excluded to
+run. slow and flaky tests can be run on its own. After building you can run tests, quoting might be necessary depending
+on your shell:
 
 ```bash
 mvn test
+mvn test -DexcludedGroups= -Dgroups=flaky,slow
+mvn test '-Dgroups=!slow'
+```
+
+```bash
+./gradlew test
+./gradlew test -DexcludeTags= -DincludeTags=flaky,slow
+./gradlew test '-DincludeTags=!slow'
 ```
 
 Please note that some tests may fail as sites change and our rippers become out of date.
